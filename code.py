@@ -9,7 +9,7 @@ gamepad = Gamepad(usb_hid.devices)
 
 def range_map(value_input, in_min, in_max, out_min, out_max):
     """
-    Map a value from range to another.
+    Map a value from a range to another.
 
     Args:
         x (float): Value to transform.
@@ -49,9 +49,8 @@ for num in range(3):
 
 # Main Loop
 while True:
-    # The button for loop is a bit hard to understand.
-    # I needed to get the On & Off positions of each switches as their own button (on the gamepad)
-    # to properly configure them in X-Plane.
+    # This loop is a bit hard to understand.
+    # I needed to get the On & Off positions of each switches as their own button on the gamepad.
     button_activated = 1  # First Gamepad Button (On Position)
     for button in buttons:
         button_deactivated = button_activated + 1  # Set the next Gamepad's button for the Off position.
@@ -66,17 +65,17 @@ while True:
 
     slider_outputs = []
     for slider in sliders:
+        average_list = []
+        for reading in range(8):
         # The potentiometers are a bit noisy, averaging a few readings to help a tiny bit.
-        first_value = slider.value
-        sec_value = slider.value
-        third_value = slider.value
-        fourth_value = slider.value
-        fifth_value = slider.value
-        average =  (first_value + sec_value + third_value + fourth_value + fifth_value) // 5
+            average_list.append(slider.value)
+            time.sleep(0.008)
+        average = sum(average_list) / len(average_list)
         
         # Cropping some head and toe to stop the noise on the 2 ends.
         cropped_value = max(500, min(65035, average))
-        slider_outputs.append(range_map(cropped_value, 500, 65035, -127, 127))
+        map_range = int(range_map(cropped_value, 500, 65035, -127, 127))
+        slider_outputs.append(map_range)
         
     gamepad.move_sliders(*slider_outputs)
     time.sleep(0.1)
