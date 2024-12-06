@@ -1,6 +1,8 @@
 # DIY Throttle
 Cheap DIY throttle and buttons for flight simulators.
 
+The custom code is in `code.py`, the rest are AdaFruit libraries.
+
 
 ## Parts
 - 3 linear potentiometers.
